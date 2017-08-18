@@ -1,2 +1,2 @@
 #!/bin/bash
-emcc vew.cpp -s WASM=1 -o vew.html
+emcc vew.cpp -O3 -s WASM=1 -o output/vew.html
