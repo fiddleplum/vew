@@ -5,7 +5,7 @@ namespace VEW
 	class Engine
 	{
 	public:
-		Engine();
+		Engine(unsigned int width, unsigned int height);
 		~Engine();
 
 	private:

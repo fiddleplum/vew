@@ -3,5 +3,5 @@
 
 int main(int argc, char **argv)
 {
-	VEW::Engine engine;
+	VEW::Engine engine {800, 600};
 }
