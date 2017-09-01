@@ -26,6 +26,9 @@ namespace vew
 		// Set the elements from an initializer list.
 		Vector<dim, T> const& operator=(std::initializer_list<T> const& a);
 
+		// Returns a zero vector.
+		static Vector<dim, T> zero();
+
 		// Returns a unit vector along the i axis.
 		static Vector<dim, T> axis(unsigned int i);
 
@@ -223,6 +226,17 @@ namespace vew
 			i++;
 		}
 		return *this;
+	}
+
+	template<unsigned int dim, typename T>
+	Vector<dim, T> Vector<dim, T>::zero()
+	{
+		Vector<dim, T> r;
+		for (unsigned int i = 0; i < dim; ++i)
+		{
+			r.c[i] = 0;
+		}
+		return r;
 	}
 
 	template<unsigned int dim, typename T>

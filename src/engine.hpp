@@ -1,5 +1,6 @@
 #pragma once
 
+#include "vector.hpp"
 #include <string>
 
 namespace vew
@@ -7,12 +8,15 @@ namespace vew
 	class Engine
 	{
 	public:
-		Engine(unsigned int width, unsigned int height);
+		Engine();
 
 		~Engine();
+
+		void render();
 
 		void printMessage(std::string const& message);
 
 	private:
+		Vector2d canvasSize;
 	};
 }

@@ -32,6 +32,11 @@
 		"utility": "cpp",
 		"atomic": "cpp",
 		"locale": "cpp",
-		"system_error": "cpp"
+		"system_error": "cpp",
+		"bitset": "cpp",
+		"map": "cpp",
+		"algorithm": "cpp",
+		"ios": "cpp",
+		"__locale": "cpp"
 	}
 }
