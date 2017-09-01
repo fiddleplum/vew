@@ -90,7 +90,7 @@ namespace vew
 
 	void Viewport::updateProjection()
 	{
-		double delta = std::numeric_limits<double>::epsilon();
+		double epsilon = std::numeric_limits<double>::epsilon();
 		Vector2d pixelSize = bounds.getSize().scale(canvasSize);
 		if (0 < fieldOfView && fieldOfView < M_PI && pixelSize[0] > 0 && pixelSize[1] > 0)
 		{
@@ -106,8 +106,8 @@ namespace vew
 				projection(0, 0) = (float)(invTanHalfFieldOfView / aspectRatio);
 				projection(1, 2) = (float)invTanHalfFieldOfView;
 			}
-			projection(2, 1) = (float)(1.0 - delta);
-			projection(2, 3) = (float)(nearDistance * (delta - 2.0));
+			projection(2, 1) = (float)(1.0 - epsilon);
+			projection(2, 3) = (float)(nearDistance * (epsilon - 2.0));
 		}
 	}
 }
