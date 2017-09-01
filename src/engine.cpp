@@ -1,8 +1,9 @@
 #include "engine.hpp"
 #include <SDL/SDL.h>
+#include <emscripten/bind.h>
 #include <iostream>
 
-namespace VEW
+namespace vew
 {
 	Engine::Engine(unsigned int width, unsigned int height)
 	{
@@ -18,5 +19,21 @@ namespace VEW
 
 	Engine::~Engine()
 	{
+		std::cout << "Deleted." << std::endl;
+		SDL_Quit();
 	}
+
+	void Engine::printMessage(std::string const& message)
+	{
+		std::cout << message << std::endl;
+	}
+}
+
+// Binding Code
+EMSCRIPTEN_BINDINGS(vew)
+{
+	emscripten::class_<vew::Engine>("Engine")
+	.constructor<unsigned int, unsigned int>()
+	.function("printMessage", &vew::Engine::printMessage)
+	;
 }

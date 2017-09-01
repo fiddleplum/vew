@@ -1,23 +1,80 @@
 #include "shader.hpp"
 #include <GLES2/gl2.h>
+#include <vector>
 
-namespace VEW
+namespace vew
 {
+	int compileObject(std::string const& type, std::string const& code);
+	int linkProgram(std::vector<int> const& objects);
+	void populateUniformMapping(std::map<std::string, int>& uniforms, int program);
+	
 	Shader::Shader(std::string const& vertexCode, std::string const& fragmentCode)
 	{
-		std::vector<unsigned int> objects;
+		std::vector<int> objects;
 		objects.push_back(compileObject("vertex", vertexCode));
 		objects.push_back(compileObject("fragment", fragmentCode));
 		program = linkProgram(objects);
+		for (int object : objects)
+		{
+			glDetachShader(program, object);
+			glDeleteShader(object);
+		}
+		populateUniformMapping(uniformLocations, program);
 	}
 
 	Shader::~Shader()
 	{
+		glDeleteProgram(program);
 	}
 
-	unsigned int Shader::compileObject(std::string const& type, std::string const& code)
+	int Shader::getUniformLocation(std::string const& name) const
 	{
-		unsigned int glType = 0;
+		auto iter = uniformLocations.find(name);
+		if (iter == uniformLocations.end())
+		{
+			return -1;
+		}
+		return iter->second;
+	}
+
+	void Shader::setUniform(int location, int value) const
+	{
+		glUniform1i(location, value);
+	}
+
+	void Shader::setUniform(int location, float value) const
+	{
+		glUniform1f(location, value);
+	}
+
+	void Shader::setUniform(int location, Vector2i value) const
+	{
+		glUniform2iv(location, 1, value.ptr());
+	}
+
+	void Shader::setUniform(int location, Vector2f value) const
+	{
+		glUniform2fv(location, 1, value.ptr());
+	}
+
+	void Shader::setUniform(int location, Vector3f value) const
+	{
+		glUniform3fv(location, 1, value.ptr());
+	}
+
+	void Shader::setUniform(int location, Vector4f value) const
+	{
+		glUniform4fv(location, 1, value.ptr());
+	}
+
+	void Shader::setUniform(int location, Matrix44f value) const
+	{
+		glUniformMatrix4fv(location, 1, false, value.ptr());
+	}
+
+	int compileObject(std::string const& type, std::string const& code)
+	{
+		int glType = 0;
 		if (type == "vertex")
 		{
 			glType = GL_VERTEX_SHADER;
@@ -30,7 +87,7 @@ namespace VEW
 		{
 			throw std::runtime_error("Unknown object type '" + type + "', with code:\n" + code + "\n");
 		}
-		unsigned int object;
+		int object;
 		object = glCreateShader(glType);
 		char const* shaderCode = code.c_str();
 		GLint shaderCodeSize = (GLint)code.size();
@@ -53,10 +110,10 @@ namespace VEW
 		return object;
 	}
 
-	unsigned int Shader::linkProgram(std::vector<unsigned int> const& objects)
+	int linkProgram(std::vector<int> const& objects)
 	{
-		unsigned int program = glCreateProgram();
-		for (unsigned int object : objects)
+		int program = glCreateProgram();
+		for (int object : objects)
 		{
 			glAttachShader(program, object);
 		}
@@ -74,5 +131,25 @@ namespace VEW
 			throw std::runtime_error("Error linking program: " + log);
 		}
 		return program;
+	}
+
+	void populateUniformMapping(std::map<std::string, int>& uniformLocations, int program)
+	{
+		GLint numVariables;
+		GLint maxNameSize;
+		std::string name;
+		glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &numVariables);
+		glGetProgramiv(program, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxNameSize);
+		for (int i = 0; i < numVariables; i++)
+		{
+			GLsizei nameSize;
+			GLint glSize;
+			GLenum glType;
+			name.resize(maxNameSize);
+			glGetActiveUniform(program, i, maxNameSize, &nameSize, &glSize, &glType, &name[0]);
+			name.resize(nameSize);
+			int location = glGetUniformLocation(program, name.c_str());
+			uniformLocations[name] = location;
+		}
 	}
 }
