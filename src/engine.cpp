@@ -1,4 +1,6 @@
 #include "engine.hpp"
+#include "viewport.hpp"
+#include "entity.hpp"
 #include <SDL/SDL.h>
 #include <emscripten/bind.h>
 #include <emscripten/emscripten.h>
@@ -42,13 +44,58 @@ namespace vew
 	{
 		std::cout << message << std::endl;
 	}
+
+	Viewport * Engine::addViewport()
+	{
+		Viewport * viewport = new Viewport();
+		viewports.push_back(viewport);
+		return viewport;
+	}
+	
+	void Engine::removeViewport(Viewport * viewport)
+	{
+		for (int i = 0; i < viewports.size(); i++)
+		{
+			if (viewports[i] == viewport)
+			{
+				viewports.erase(viewports.begin() + i);
+				delete viewport;
+				return;
+			}
+		}
+		printMessage("Viewport not found.");
+	}
+
+	Entity * Engine::addEntity()
+	{
+		Entity * entity = new Entity();
+		entities.insert(entity);
+		return entity;
+	}
+	
+	void Engine::removeEntity(Entity * entity)
+	{
+		auto iter = entities.find(entity);
+		if (iter != entities.end())
+		{
+			entities.erase(iter);
+			delete entity;
+			return;
+		}
+		printMessage("Entity not found.");
+	}
 }
 
 // Binding Code
-EMSCRIPTEN_BINDINGS(vew)
+EMSCRIPTEN_BINDINGS(vew_Engine)
 {
 	emscripten::class_<vew::Engine>("Engine")
 	.constructor<>()
 	.function("render", &vew::Engine::render)
-	.function("printMessage", &vew::Engine::printMessage);
+	.function("printMessage", &vew::Engine::printMessage)
+	.function("addViewport", &vew::Engine::addViewport, emscripten::allow_raw_pointers())
+	.function("removeViewport", &vew::Engine::removeViewport, emscripten::allow_raw_pointers())
+	.function("addEntity", &vew::Engine::addEntity, emscripten::allow_raw_pointers())
+	.function("removeEntity", &vew::Engine::removeEntity, emscripten::allow_raw_pointers())
+	;
 }

@@ -13,10 +13,10 @@ namespace vew
 		Quaternion();
 
 		// Constructs it with specific numbers.
-		Quaternion(T r, T i, T j, T k);
+		Quaternion(T w, T x, T y, T z);
 
 		// Constructs it with a real and imaginary part.
-		Quaternion(T r, Vector<3, T> ijk);
+		Quaternion(T w, Vector<3, T> xyz);
 
 		// Constructs it with an angle and axis. If axisIsNormalized is true, the axis will not be normalized.
 		Quaternion(T angle, Vector<3, T> const& axis, bool axisIsNormalized);
@@ -26,6 +26,15 @@ namespace vew
 
 		// Constructs it as a trio of euler angles.
 		Quaternion(T yaw, T pitch, T roll);
+
+		// Returns an identity quaterion;
+		static Quaternion<T> identity();
+
+		// Access element at index i.
+		T& operator[](int i);
+
+		// Access element at index i.
+		T operator[](int i) const;
 
 		// Returns the conjugate.
 		Quaternion<T> conjugate() const;
@@ -46,16 +55,17 @@ namespace vew
 		Vector<3, T> rotate(Vector<3, T> const& v) const;
 
 		// Returns the 0, 1, or 2 axis of the frame represented by this. Assumes this is normalized.
-		Vector<3, T> getAxis(unsigned int i) const;
+		Vector<3, T> getAxis(int i) const;
 
 		// Returns the rotation matrix represented by this, for pre-multiplying. Assumes this is normalized.
 		Matrix<3, 3, T> getMatrix() const;
 
+	private:
 		// The real part.
-		T r;
+		T w;
 
 		// The imaginary part.
-		Vector<3, T> ijk;
+		Vector<3, T> xyz;
 	};
 
 	typedef Quaternion<float> Quaternionf;
@@ -86,44 +96,44 @@ namespace vew
 	template<typename T>
 	Quaternion<T>::Quaternion()
 	{
-		r = 1;
-		ijk = {0, 0, 0};
+		w = 1;
+		xyz = {0, 0, 0};
 	}
 
 	template<typename T>
-	Quaternion<T>::Quaternion(T r_, T i, T j, T k)
+	Quaternion<T>::Quaternion(T w_, T x, T y, T z)
 	{
-		r = r;
-		ijk = {i, j, k};
+		w = w_;
+		xyz = {x, y, z};
 	}
 
 	template<typename T>
-	Quaternion<T>::Quaternion(T r_, Vector<3, T> ijk_)
+	Quaternion<T>::Quaternion(T w_, Vector<3, T> xyz_)
 	{
-		r = r_;
-		ijk = ijk_;
+		w = w_;
+		xyz = xyz_;
 	}
 
 	template<typename T>
 	Quaternion<T>::Quaternion(Vector<3, T> const& start, Vector<3, T> const& end, bool vectorsAreNormalized)
 	{
-		r = start.dot(end);
+		w = start.dot(end);
 		Vector<3, T> axis;
-		if (r != -1)
+		if (w != -1)
 		{
-			ijk = start.cross(end);
+			xyz = start.cross(end);
 		}
 		else
 		{
-			ijk = start.perpendicular();
+			xyz = start.perpendicular();
 		}
 		if (vectorsAreNormalized)
 		{
-			r += 1;
+			w += 1;
 		}
 		else
 		{
-			r += start.norm() * end.norm();
+			w += start.norm() * end.norm();
 		}
 		normalize();
 	}
@@ -131,16 +141,16 @@ namespace vew
 	template<typename T>
 	Quaternion<T>::Quaternion(T angle, Vector<3, T> const& axis, bool axisIsNormalized)
 	{
-		r = std::cos(angle / (T)2);
+		w = std::cos(angle / (T)2);
 		if (axisIsNormalized)
 		{
-			ijk = axis;
+			xyz = axis;
 		}
 		else
 		{
-			ijk = axis.unit();
+			xyz = axis.unit();
 		}
-		ijk *= std::sin(angle / (T)2);
+		xyz *= std::sin(angle / (T)2);
 	}
 
 	template<typename T>
@@ -153,16 +163,48 @@ namespace vew
 		T sinPitch2 = sin(pitch / 2);
 		T cosRoll2 = cos(roll / 2);
 		T sinRoll2 = sin(roll / 2);
-		r = cosYaw2 * cosPitch2 * cosRoll2 - sinYaw2 * sinPitch2 * sinRoll2;
-		ijk[1] = cosYaw2 * cosPitch2 * sinRoll2 + sinYaw2 * sinPitch2 * cosRoll2;
-		ijk[0] = cosYaw2 * sinPitch2 * cosRoll2 - sinYaw2 * cosPitch2 * sinRoll2;
-		ijk[2] = sinYaw2 * cosPitch2 * cosRoll2 + cosYaw2 * sinPitch2 * sinRoll2;
+		w = cosYaw2 * cosPitch2 * cosRoll2 - sinYaw2 * sinPitch2 * sinRoll2;
+		xyz[1] = cosYaw2 * cosPitch2 * sinRoll2 + sinYaw2 * sinPitch2 * cosRoll2;
+		xyz[0] = cosYaw2 * sinPitch2 * cosRoll2 - sinYaw2 * cosPitch2 * sinRoll2;
+		xyz[2] = sinYaw2 * cosPitch2 * cosRoll2 + cosYaw2 * sinPitch2 * sinRoll2;
+	}
+
+	template <typename T>
+	Quaternion<T> Quaternion<T>::identity()
+	{
+		return Quaternion<T>();
+	}
+
+	template<typename T>
+	T& Quaternion<T>::operator[](int i)
+	{
+		if (i == 0)
+		{
+			return w;
+		}
+		else
+		{
+			return xyz[i - 1];
+		}
+	}
+
+	template<typename T>
+	T Quaternion<T>::operator[] (int i) const
+	{
+		if (i == 0)
+		{
+			return w;
+		}
+		else
+		{
+			return xyz[i - 1];
+		}
 	}
 
 	template<typename T>
 	Quaternion<T> Quaternion<T>::conjugate() const
 	{
-		return Quaternion<T>(r, -ijk);
+		return Quaternion<T>(w, -xyz);
 	}
 
 	template<typename T>
@@ -179,13 +221,13 @@ namespace vew
 	template<typename T>
 	T Quaternion<T>::norm() const
 	{
-		return std::sqrt((r * r) + ijk.normSq());
+		return std::sqrt((w * w) + xyz.normSq());
 	}
 
 	template<typename T>
 	T Quaternion<T>::normSq() const
 	{
-		return (r * r) + ijk.normSq();
+		return (w * w) + xyz.normSq();
 	}
 
 	template<typename T>
@@ -196,30 +238,30 @@ namespace vew
 		{
 			throw std::exception();
 		}
-		r /= n;
-		ijk /= n;
+		w /= n;
+		xyz /= n;
 	}
 
 	template<typename T>
 	Vector<3, T> Quaternion<T>::rotate(Vector<3, T> const& v) const
 	{
-		Vector<3, T> t = (T)2 * ijk.cross(v);
-		return v + r * t + ijk.cross(t);
+		Vector<3, T> t = (T)2 * xyz.cross(v);
+		return v + w * t + xyz.cross(t);
 	}
 
 	template<typename T>
-	Vector<3, T> Quaternion<T>::getAxis(unsigned int i) const
+	Vector<3, T> Quaternion<T>::getAxis(int i) const
 	{
 		if (i >= 3)
 		{
 			throw std::exception();
 		}
 		Vector3f axis;
-		unsigned int j = (i + 1) % 3;
-		unsigned int k = (i + 2) % 3;
-		axis[i] = 1.0f - 2.0f * (ijk[j] * ijk[j] + ijk[k] * ijk[k]);
-		axis[j] = 2.0f * (ijk[i] * ijk[j] + ijk[k] * r);
-		axis[k] = 2.0f * (ijk[i] * ijk[k] - ijk[j] * r);
+		int j = (i + 1) % 3;
+		int k = (i + 2) % 3;
+		axis[i] = (T)1 - (T)2 * (xyz[j] * xyz[j] + xyz[k] * xyz[k]);
+		axis[j] = (T)2 * (xyz[i] * xyz[j] + xyz[k] * w);
+		axis[k] = (T)2 * (xyz[i] * xyz[k] - xyz[j] * w);
 		return axis;
 	}
 
@@ -227,54 +269,54 @@ namespace vew
 	Matrix<3, 3, T> Quaternion<T>::getMatrix() const
 	{
 		Matrix<3, 3, T> m;
-		float ii = ijk[0] * ijk[0];
-		float ij = ijk[0] * ijk[1];
-		float ik = ijk[0] * ijk[2];
-		float ir = ijk[0] * r;
-		float jj = ijk[1] * ijk[1];
-		float jk = ijk[1] * ijk[2];
-		float jr = ijk[1] * r;
-		float kk = ijk[2] * ijk[2];
-		float kr = ijk[2] * r;
-		m(0, 0) = (T)1 - (T)2 * (jj + kk);
-		m(0, 1) = (T)2 * (ij - kr);
-		m(0, 2) = (T)2 * (ik + jr);
-		m(1, 0) = (T)2 * (ij + kr);
-		m(1, 1) = (T)1 - (T)2 * (ii + kk);
-		m(1, 2) = (T)2 * (jk - ir);
-		m(2, 0) = (T)2 * (ik - jr);
-		m(2, 1) = (T)2 * (jk + ir);
-		m(2, 2) = (T)1 - (T)2 * (ii + jj);
+		float xx = xyz[0] * xyz[0];
+		float xy = xyz[0] * xyz[1];
+		float xz = xyz[0] * xyz[2];
+		float xw = xyz[0] * w;
+		float yy = xyz[1] * xyz[1];
+		float yz = xyz[1] * xyz[2];
+		float yw = xyz[1] * w;
+		float zz = xyz[2] * xyz[2];
+		float zw = xyz[2] * w;
+		m(0, 0) = (T)1 - (T)2 * (yy + zz);
+		m(0, 1) = (T)2 * (xy - zw);
+		m(0, 2) = (T)2 * (xz + yw);
+		m(1, 0) = (T)2 * (xy + zw);
+		m(1, 1) = (T)1 - (T)2 * (xx + zz);
+		m(1, 2) = (T)2 * (yz - xw);
+		m(2, 0) = (T)2 * (xz - yw);
+		m(2, 1) = (T)2 * (yz + xw);
+		m(2, 2) = (T)1 - (T)2 * (xx + yy);
 		return m;
 	}
 
 	template<typename T>
 	Quaternion<T> operator+(Quaternion<T> const& q_lhs, Quaternion<T> const& q_rhs)
 	{
-		return Quaternion<T>(q_lhs.r + q_rhs.r, q_lhs.ijk + q_rhs.ijk);
+		return Quaternion<T>(q_lhs.w + q_rhs.r, q_lhs.xyz + q_rhs.xyz);
 	}
 
 	template<typename T>
 	Quaternion<T> operator-(Quaternion<T> const& q_lhs, Quaternion<T> const& q_rhs)
 	{
-		return Quaternion<T>(q_lhs.r - q_rhs.r, q_lhs.ijk - q_rhs.ijk);
+		return Quaternion<T>(q_lhs.w - q_rhs.r, q_lhs.xyz - q_rhs.xyz);
 	}
 
 	template<typename T>
 	Quaternion<T> operator*(Quaternion<T> const& q_lhs, Quaternion<T> const& q_rhs)
 	{
-		return Quaternion<T>(q_lhs.r * q_rhs.r - q_lhs.ijk.dot(q_rhs.ijk), q_lhs.r * q_rhs.ijk + q_rhs.r * q_lhs.ijk + q_lhs.ijk.cross(q_rhs.ijk));
+		return Quaternion<T>(q_lhs.w * q_rhs.w - q_lhs.xyz.dot(q_rhs.xyz), q_lhs.w * q_rhs.xyz + q_rhs.w * q_lhs.xyz + q_lhs.xyz.cross(q_rhs.xyz));
 	}
 
 	template<typename T>
 	Quaternion<T> operator*(Quaternion<T> const& q, T t)
 	{
-		return Quaternion<T>(q.r * t, q.ijk * t);
+		return Quaternion<T>(q.w * t, q.xyz * t);
 	}
 
 	template<typename T>
 	Quaternion<T> operator*(T t, Quaternion<T> const& q)
 	{
-		return Quaternion<T>(t * q.r, t * q.ijk);
+		return Quaternion<T>(t * q.w, t * q.xyz);
 	}
 }

@@ -7,7 +7,7 @@
 namespace vew
 {
 	// This is a standard mathematical vector class. Dim is the dimensions of the vector and T is the type of its elements.
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	class Vector final
 	{
 	public:
@@ -30,7 +30,7 @@ namespace vew
 		static Vector<dim, T> zero();
 
 		// Returns a unit vector along the i axis.
-		static Vector<dim, T> axis(unsigned int i);
+		static Vector<dim, T> axis(int i);
 
 		// Returns a vector with all elements equal to a.
 		static Vector<dim, T> filled(T a);
@@ -43,10 +43,10 @@ namespace vew
 		explicit operator Vector<dim, Y>() const;
 
 		// Access element at index i.
-		T& operator[](unsigned int i);
+		T& operator[](int i);
 
 		// Access element at index i.
-		T operator[](unsigned int i) const;
+		T operator[](int i) const;
 
 		// Add v to this.
 		void operator+=(Vector<dim, T> v);
@@ -70,11 +70,11 @@ namespace vew
 		bool isZero() const;
 
 		// Returns this extended to a higher dimension newDim, filling the extra elements with fill.
-		template<unsigned int newDim>
+		template<int newDim>
 		Vector<newDim, T> extend(T fill) const;
 
 		// Returns this shrunk to a lower dimension newDim.
-		template<unsigned int newDim>
+		template<int newDim>
 		Vector<newDim, T> shrink() const;
 
 		// Returns the dot product of this with v.
@@ -122,7 +122,7 @@ namespace vew
 	private:
 		T c[dim];
 
-		template<unsigned int dimY, typename Y>
+		template<int dimY, typename Y>
 		friend class Vector;
 	};
 
@@ -137,89 +137,89 @@ namespace vew
 	typedef Vector<4, double> Vector4d;
 
 	// Returns true if each element in v0 is equal to the corresponding element in v1.
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	bool operator==(Vector<dim, T> v0, Vector<dim, T> v1);
 
 	// Returns true if any element in v0 is not equal to the corresponding elment in v1.
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	bool operator!=(Vector<dim, T> v0, Vector<dim, T> v1);
 
 	// Returns true if the the first element in v0 that is not equal to the corresponding element in v1 is less than the other element. If they are all equal, it returns false.
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	bool operator<(Vector<dim, T> v0, Vector<dim, T> v1);
 
 	// Returns -v.
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> operator-(Vector<dim, T> const& v);
 
 	// Returns +v.
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> operator+(Vector<dim, T> const& v);
 
 	// Returns v0 + v1.
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> operator+(Vector<dim, T> v0, Vector<dim, T> v1);
 
 	// Returns v0 - v1.
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> operator-(Vector<dim, T> v0, Vector<dim, T> v1);
 
 	// Returns a v.
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> operator*(T a, Vector<dim, T> v);
 
 	// Returns v a.
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> operator*(Vector<dim, T> v, T a);
 
 	// Returns v / a. Beware of truncation if they are both integers.
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> operator/(Vector<dim, T> v, T a);
 
 	// Template implementations
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T>::Vector()
 	{
 		static_assert(dim > 0, "dim == 0");
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			c[i] = 0;
 		}
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T>::Vector(Vector<dim, T> const& a)
 	{
 		static_assert(dim > 0, "dim == 0");
 		*this = a;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T>::Vector(std::initializer_list<T> const& a)
 	{
 		static_assert(dim > 0, "dim == 0");
 		*this = a;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> const& Vector<dim, T>::operator=(Vector<dim, T> const& v)
 	{
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			c[i] = v.c[i];
 		}
 		return *this;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> const& Vector<dim, T>::operator=(std::initializer_list<T> const& a)
 	{
 		if (a.size() != dim)
 		{
 			throw std::exception();
 		}
-		unsigned int i = 0;
+		int i = 0;
 		for (auto t : a)
 		{
 			c[i] = t;
@@ -228,26 +228,21 @@ namespace vew
 		return *this;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> Vector<dim, T>::zero()
 	{
-		Vector<dim, T> r;
-		for (unsigned int i = 0; i < dim; ++i)
-		{
-			r.c[i] = 0;
-		}
-		return r;
+		return Vector<dim, T>();
 	}
 
-	template<unsigned int dim, typename T>
-	Vector<dim, T> Vector<dim, T>::axis(unsigned int i)
+	template<int dim, typename T>
+	Vector<dim, T> Vector<dim, T>::axis(int i)
 	{
 		if (i >= dim)
 		{
 			throw std::exception();
 		}
 		Vector<dim, T> r;
-		for (unsigned int j = 0; j < dim; ++j)
+		for (int j = 0; j < dim; ++j)
 		{
 			r.c[j] = 0;
 		}
@@ -255,38 +250,38 @@ namespace vew
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> Vector<dim, T>::filled(T a)
 	{
 		Vector<dim, T> r;
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			r.c[i] = a;
 		}
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T>::operator T() const
 	{
 		static_assert(dim == 1, "dim != 1");
 		return c[0];
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	template<typename Y>
 	Vector<dim, T>::operator Vector<dim, Y>() const
 	{
 		Vector<dim, Y> r;
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			r.c[i] = (Y)c[i];
 		}
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
-	T& Vector<dim, T>::operator[](unsigned int i)
+	template<int dim, typename T>
+	T& Vector<dim, T>::operator[](int i)
 	{
 		if (i >= dim)
 		{
@@ -295,8 +290,8 @@ namespace vew
 		return c[i];
 	}
 
-	template<unsigned int dim, typename T>
-	T Vector<dim, T>::operator[](unsigned int i) const
+	template<int dim, typename T>
+	T Vector<dim, T>::operator[](int i) const
 	{
 		if (i >= dim)
 		{
@@ -305,34 +300,34 @@ namespace vew
 		return c[i];
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	void Vector<dim, T>::operator+=(Vector<dim, T> v)
 	{
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			c[i] += v.c[i];
 		}
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	void Vector<dim, T>::operator-=(Vector<dim, T> v)
 	{
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			c[i] -= v.c[i];
 		}
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	void Vector<dim, T>::operator*=(T a)
 	{
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			c[i] *= a;
 		}
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	void Vector<dim, T>::normalize()
 	{
 		T n = norm();
@@ -341,28 +336,28 @@ namespace vew
 			throw std::exception();
 		}
 		T nInv = 1 / n;
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			c[i] = c[i] * nInv;
 		}
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	T* Vector<dim, T>::ptr()
 	{
 		return c;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	T const* Vector<dim, T>::ptr() const
 	{
 		return c;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	bool Vector<dim, T>::isZero() const
 	{
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			if (c[i] != 0)
 			{
@@ -372,48 +367,48 @@ namespace vew
 		return true;
 	}
 
-	template<unsigned int dim, typename T>
-	template<unsigned int newDim>
+	template<int dim, typename T>
+	template<int newDim>
 	Vector<newDim, T> Vector<dim, T>::extend(T fill) const
 	{
 		static_assert(newDim >= dim, "newDim < dim");
 		Vector<newDim, T> r;
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			r[i] = c[i];
 		}
-		for (unsigned int i = dim; i < newDim; ++i)
+		for (int i = dim; i < newDim; ++i)
 		{
 			r[i] = fill;
 		}
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
-	template<unsigned int newDim>
+	template<int dim, typename T>
+	template<int newDim>
 	Vector<newDim, T> Vector<dim, T>::shrink() const
 	{
 		static_assert(newDim <= dim, "newDim > dim");
 		Vector<newDim, T> r;
-		for (unsigned int i = 0; i < newDim; ++i)
+		for (int i = 0; i < newDim; ++i)
 		{
 			r[i] = c[i];
 		}
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	T Vector<dim, T>::dot(Vector<dim, T> v) const
 	{
 		T r = 0;
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			r += c[i] * v.c[i];
 		}
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> Vector<dim, T>::cross(Vector<dim, T> v) const
 	{
 		static_assert(dim == 3, "dim != 3");
@@ -424,7 +419,7 @@ namespace vew
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> Vector<dim, T>::perp2d() const
 	{
 		static_assert(dim == 2, "dim != 2");
@@ -434,21 +429,21 @@ namespace vew
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	T Vector<dim, T>::cross2d(Vector<dim, T> v) const
 	{
 		static_assert(dim == 2, "dim != 2");
 		return c[0] * v.c[1] - c[1] * v.c[0];
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> Vector<dim, T>::relative2d(Vector<dim, T> v) const
 	{
 		static_assert(dim == 2, "dim != 2");
 		return Vector<dim, T>(dot(v), cross2D(v));
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> Vector<dim, T>::rotate2d(float a)
 	{
 		static_assert(dim == 2, "dim != 2");
@@ -457,7 +452,7 @@ namespace vew
 		return Vector<dim, T>(c[0] * cosa - c[1] * sina, c[0] * sina + c[1] * cosa);
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> Vector<dim, T>::perpendicular() const
 	{
 		static_assert(dim == 3, "dim != 3");
@@ -469,20 +464,20 @@ namespace vew
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	T Vector<dim, T>::norm() const
 	{
 		T r = dot(*this);
 		return sqrt(r);
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	T Vector<dim, T>::normSq() const
 	{
 		return dot(*this);
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> Vector<dim, T>::unit() const
 	{
 		T n = norm();
@@ -492,29 +487,29 @@ namespace vew
 		}
 		T nInv = 1 / n;
 		Vector<dim, T> r;
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			r.c[i] = c[i] * nInv;
 		}
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> Vector<dim, T>::scale(Vector<dim, T> v) const
 	{
 		Vector<dim, T> r;
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			r.c[i] = c[i] * v.c[i];
 		}
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> Vector<dim, T>::scaleInv(Vector<dim, T> v) const
 	{
 		Vector<dim, T> r;
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			if (v.c[i] == 0)
 			{
@@ -525,11 +520,11 @@ namespace vew
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> Vector<dim, T>::clamp(T min, T max) const
 	{
 		Vector<dim, T> r;
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			if (c[i] < min)
 			{
@@ -547,11 +542,11 @@ namespace vew
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> Vector<dim, T>::clamp(Vector<dim, T> min, Vector<dim, T> max) const
 	{
 		Vector<dim, T> r;
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			if (c[i] < min.c[i])
 			{
@@ -569,10 +564,10 @@ namespace vew
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	bool operator==(Vector<dim, T> v0, Vector<dim, T> v1)
 	{
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			if (v0[i] != v1[i])
 			{
@@ -582,16 +577,16 @@ namespace vew
 		return true;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	bool operator!=(Vector<dim, T> v0, Vector<dim, T> v1)
 	{
 		return !(v0 == v1);
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	bool operator<(Vector<dim, T> v0, Vector<dim, T> v1)
 	{
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			if (v0[i] < v1[i])
 			{
@@ -605,29 +600,29 @@ namespace vew
 		return false;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> operator-(Vector<dim, T> const& v)
 	{
 		Vector<dim, T> r;
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			r[i] = -v[i];
 		}
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> operator+(Vector<dim, T> const& v)
 	{
 		Vector<dim, T> r;
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			r[i] = +v[i];
 		}
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> operator+(Vector<dim, T> v0, Vector<dim, T> v1)
 	{
 		Vector<dim, T> r(v0);
@@ -635,7 +630,7 @@ namespace vew
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> operator-(Vector<dim, T> v0, Vector<dim, T> v1)
 	{
 		Vector<dim, T> r(v0);
@@ -643,29 +638,29 @@ namespace vew
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> operator*(T a, Vector<dim, T> v)
 	{
 		Vector<dim, T> r;
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			r[i] = a * v[i];
 		}
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> operator*(Vector<dim, T> v, T a)
 	{
 		Vector<dim, T> r;
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			r[i] = v[i] * a;
 		}
 		return r;
 	}
 
-	template<unsigned int dim, typename T>
+	template<int dim, typename T>
 	Vector<dim, T> operator/(Vector<dim, T> v, T a)
 	{
 		if (a == 0)
@@ -673,7 +668,7 @@ namespace vew
 			throw std::exception();
 		}
 		Vector<dim, T> r;
-		for (unsigned int i = 0; i < dim; ++i)
+		for (int i = 0; i < dim; ++i)
 		{
 			r[i] = v[i] / a;
 		}
