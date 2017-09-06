@@ -5,6 +5,7 @@
   * removeEntity(entity)
   * addViewport() - the added viewport
   * removeViewport(viewport)
+  * printMessage(message)
 
 * entity
   * getFrame() - frame
