@@ -6,7 +6,12 @@
 
 namespace vew
 {
-	std::map<std::string, std::function<Component *()>> Entity::componentTypeFunctors;
+	// Creates a singleton of component types for the entity's component factory.
+	std::map<std::string, std::function<Component *()>> & componentTypeFunctors()
+	{
+		static std::map<std::string, std::function<Component *()>> _componentTypeFunctors;
+		return _componentTypeFunctors;
+	}
 
 	Entity::Entity()
 	{
@@ -45,15 +50,10 @@ namespace vew
 		this->parent = parent;
 	}
 
-	void Entity::registerComponent(std::string const & type, std::function<Component *()> const & newFunctor)
-	{
-		componentTypeFunctors[type] = newFunctor;
-	}
-
 	Component * Entity::addComponent(std::string const & type)
 	{
-		auto iter = componentTypeFunctors.find(type);
-		if (iter != componentTypeFunctors.end())
+		auto iter = componentTypeFunctors().find(type);
+		if (iter != componentTypeFunctors().end())
 		{
 			Component * component = iter->second();
 			components.insert(component);
@@ -74,11 +74,28 @@ namespace vew
 		}
 		std::cout << "Could not find component." << std::endl;
 	}
+
+	void Entity::listComponentTypes()
+	{
+		std::cout << componentTypeFunctors().size() << std::endl;
+		std::vector<std::string> componentTypes;
+		for (auto pair : componentTypeFunctors())
+		{
+			std::cout << pair.first << std::endl;
+			componentTypes.push_back(pair.first);
+		}
+	}
+
+	void Entity::registerComponent(std::string const & type, std::function<Component *()> newComponentFunctor)
+	{
+		componentTypeFunctors()[type] = newComponentFunctor;
+	}
 }
 
 // Binding Code
 EMSCRIPTEN_BINDINGS(vew_Entity)
 {
+	emscripten::register_vector<std::string>("VectorString");
 	emscripten::class_<vew::Entity>("Entity")
 	.constructor<>()
 	.function("getPosition", &vew::Entity::getPosition)
@@ -89,5 +106,6 @@ EMSCRIPTEN_BINDINGS(vew_Entity)
 	.function("setParent", &vew::Entity::setParent, emscripten::allow_raw_pointers())
 	.function("addComponent", &vew::Entity::addComponent, emscripten::allow_raw_pointers())
 	.function("removeComponent", &vew::Entity::removeComponent, emscripten::allow_raw_pointers())
+	.class_function("listComponentTypes", &vew::Entity::listComponentTypes)
 	;
 }

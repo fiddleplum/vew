@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <set>
+#include <iostream>
 
 namespace vew
 {
@@ -31,14 +32,30 @@ namespace vew
 
 		void removeComponent(Component * component);
 
-		static void registerComponent(std::string const & type, std::function<Component *()> const & newFunctor);
+		static void listComponentTypes();
+
+		// Used by ComponentRegister to self-register component types.
+		template <typename T>
+		static void registerComponent(std::string const & type);
 
 	private:
+		static void registerComponent(std::string const & type, std::function<Component *()> newComponentFunctor);
+
 		Vector3d position;
 		Quaterniond orientation;
 		Entity * parent;
 		std::set<Component *> components;
-
-		static std::map<std::string, std::function<Component *()>> componentTypeFunctors;
 	};
+
+	// Template implementation
+
+	template <typename T>
+	void Entity::registerComponent(std::string const & type)
+	{
+		std::cout << "Registering " << type << std::endl;
+		registerComponent(type, [] () -> T *
+		{
+			return new T();
+		});
+	}
 }

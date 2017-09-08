@@ -1,10 +1,11 @@
 #pragma once
 
 #include "matrix.hpp"
+#include "component.hpp"
 
 namespace vew
 {
-	class Camera
+	class Camera : public Component
 	{
 	public:
 		// Constructor.

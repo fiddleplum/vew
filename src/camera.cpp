@@ -1,9 +1,12 @@
 #include "camera.hpp"
+#include "entity.hpp"
 #include <emscripten/bind.h>
 #include <limits>
 
 namespace vew
 {
+	ComponentRegister<Camera> cameraRegister("camera");
+
 	Camera::Camera()
 	{
 		fieldOfView = M_PI / 3.0;
