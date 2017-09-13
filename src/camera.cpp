@@ -87,7 +87,7 @@ namespace vew
 // Binding Code
 EMSCRIPTEN_BINDINGS(vew_Camera)
 {
-	emscripten::class_<vew::Camera>("Camera")
+	emscripten::class_<vew::Camera, emscripten::base<vew::Component>>("Camera")
 	.constructor<>()
 	.function("getFieldOfView", &vew::Camera::getFieldOfView)
 	.function("getFieldOfViewXY", &vew::Camera::getFieldOfViewXY)
