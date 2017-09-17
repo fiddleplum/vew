@@ -88,13 +88,12 @@ namespace vew
 EMSCRIPTEN_BINDINGS(vew_Camera)
 {
 	emscripten::class_<vew::Camera, emscripten::base<vew::Component>>("Camera")
-	.constructor<>()
-	.function("getFieldOfView", &vew::Camera::getFieldOfView)
-	.function("getFieldOfViewXY", &vew::Camera::getFieldOfViewXY)
-	.function("setFieldOfView", &vew::Camera::setFieldOfView)
-	.function("getNearDistance", &vew::Camera::getNearDistance)
-	.function("setNearDistance", &vew::Camera::setNearDistance)
-	;
+		.constructor<>()
+		.function("getFieldOfView", &vew::Camera::getFieldOfView)
+		.function("getFieldOfViewXY", &vew::Camera::getFieldOfViewXY)
+		.function("setFieldOfView", &vew::Camera::setFieldOfView)
+		.function("getNearDistance", &vew::Camera::getNearDistance)
+		.function("setNearDistance", &vew::Camera::setNearDistance);
 }
 
 /*

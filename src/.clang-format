@@ -1,0 +1,11 @@
+IndentWidth: 4
+UseTab: Always
+TabWidth: 4
+BreakBeforeBraces: Allman
+NamespaceIndentation: All
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: None
+AlwaysBreakTemplateDeclarations: true
+ColumnLimit: 0
+PointerAlignment: Middle
+SortIncludes: false

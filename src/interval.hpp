@@ -62,10 +62,12 @@ namespace vew
 		Interval<dim, T> intersectedWith(Interval<dim, T> const & other) const;
 
 		// Returns a position or size aligned to the interval.
-		template <typename Y> Vector<dim, T> getSizeRelativeToThis(Vector<dim, Y> fractionOfThisSize, Vector<dim, T> offset) const;
+		template <typename Y>
+		Vector<dim, T> getSizeRelativeToThis(Vector<dim, Y> fractionOfThisSize, Vector<dim, T> offset) const;
 
 		// Returns an object position aligned to the interval, given the size of an object. You may want to set the size of the object first using the function above.
-		template <typename Y> Vector<dim, T> getPositionRelativeToThis(Vector<dim, T> objectSize, Vector<dim, Y> fractionOfObjectSize, Vector<dim, Y> fractionOfThisSize, Vector<dim, T> offset) const;
+		template <typename Y>
+		Vector<dim, T> getPositionRelativeToThis(Vector<dim, T> objectSize, Vector<dim, Y> fractionOfObjectSize, Vector<dim, Y> fractionOfThisSize, Vector<dim, T> offset) const;
 
 		Vector<dim, T> min;
 		Vector<dim, T> max;
@@ -83,7 +85,8 @@ namespace vew
 		max = other.max;
 	}
 
-	template <int dim, typename T> template <typename Y>
+	template <int dim, typename T>
+	template <typename Y>
 	Interval<dim, T>::Interval(Interval<dim, Y> const & other)
 	{
 		min = Vector<dim, T>(other.min);
@@ -237,7 +240,8 @@ namespace vew
 		return r;
 	}
 
-	template <int dim, typename T> template <typename Y>
+	template <int dim, typename T>
+	template <typename Y>
 	Vector<dim, T> Interval<dim, T>::getSizeRelativeToThis(Vector<dim, Y> fractionOfThisSize, Vector<dim, T> offset) const
 	{
 		Vector<dim, T> thisSize = getSize();
@@ -249,7 +253,8 @@ namespace vew
 		return r;
 	}
 
-	template <int dim, typename T> template <typename Y>
+	template <int dim, typename T>
+	template <typename Y>
 	Vector<dim, T> Interval<dim, T>::getPositionRelativeToThis(Vector<dim, T> objectSize, Vector<dim, Y> fractionOfObjectSize, Vector<dim, Y> fractionOfThisSize, Vector<dim, T> offset) const
 	{
 		Vector<dim, T> thisSize = getSize();

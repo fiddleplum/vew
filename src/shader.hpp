@@ -10,10 +10,10 @@ namespace vew
 	class Shader
 	{
 	public:
-		Shader(std::string const& vertexCode, std::string const& fragmentCode);
+		Shader(std::string const & vertexCode, std::string const & fragmentCode);
 		~Shader();
 
-		int getUniformLocation(std::string const& name) const;
+		int getUniformLocation(std::string const & name) const;
 
 		void setUniform(int location, int value) const;
 		void setUniform(int location, float value) const;

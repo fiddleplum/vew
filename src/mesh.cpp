@@ -17,7 +17,7 @@ namespace vew
 
 	Mesh::~Mesh()
 	{
-		for (auto&& pair : vertexBufferObjects)
+		for (auto && pair : vertexBufferObjects)
 		{
 #ifdef GL_ES_VERSION_3_0
 			glDeleteBuffers(1, &pair.second);
@@ -36,17 +36,17 @@ namespace vew
 		numIndicesPerPrimitive = numIndices;
 		switch (numIndices)
 		{
-			case 1:
-				glMode = GL_POINTS;
-				break;
-			case 2:
-				glMode = GL_LINES;
-				break;
-			case 3:
-				glMode = GL_TRIANGLES;
-				break;
-			default:
-				throw std::runtime_error("Error: Wrong number of indices per primitive. ");
+		case 1:
+			glMode = GL_POINTS;
+			break;
+		case 2:
+			glMode = GL_LINES;
+			break;
+		case 3:
+			glMode = GL_TRIANGLES;
+			break;
+		default:
+			throw std::runtime_error("Error: Wrong number of indices per primitive. ");
 		}
 	}
 
@@ -58,7 +58,7 @@ namespace vew
 		glVertexAttribFormat(componentIndex, numDimensions, GL_FLOAT, GL_FALSE, byteOffsetInVertex);
 		glVertexAttribBinding(componentIndex, verticesIndex);
 #else
-		VertexBufferObject& vbo = vertexBufferObjects[verticesIndex];
+		VertexBufferObject & vbo = vertexBufferObjects[verticesIndex];
 		if (vbo.components.size() <= componentIndex)
 		{
 			vbo.components.resize(componentIndex);
@@ -68,7 +68,7 @@ namespace vew
 #endif
 	}
 
-	void Mesh::setVertices(int index, std::vector<float> const& vertices, int byteSizeOfVertex, bool instanced)
+	void Mesh::setVertices(int index, std::vector<float> const & vertices, int byteSizeOfVertex, bool instanced)
 	{
 		auto it = vertexBufferObjects.find(index);
 		if (vertices.size() > 0 && byteSizeOfVertex > 0)
@@ -105,7 +105,7 @@ namespace vew
 			}
 			glBindBuffer(GL_ARRAY_BUFFER, buffer);
 #endif
-			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), (void const*)&vertices[0], GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), (void const *)&vertices[0], GL_STATIC_DRAW);
 		}
 		else if (it != vertexBufferObjects.end())
 		{
@@ -122,11 +122,11 @@ namespace vew
 		}
 	}
 
-	void Mesh::setIndices(std::vector<int> const& indices)
+	void Mesh::setIndices(std::vector<int> const & indices)
 	{
 		numIndicesInInstance = (int)indices.size();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), (void const*)&indices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int), (void const *)&indices[0], GL_STATIC_DRAW);
 	}
 
 	void Mesh::setNumInstances(int numInstances_)
@@ -144,11 +144,11 @@ namespace vew
 #else
 		for (int vboI = 0; vboI < vertexBufferObjects.size(); vboI++)
 		{
-			VertexBufferObject const& vertexBufferObject = vertexBufferObjects.at(vboI);
+			VertexBufferObject const & vertexBufferObject = vertexBufferObjects.at(vboI);
 			glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject.buffer);
 			for (unsigned int vcI = 0; vcI < vertexBufferObject.components.size(); vcI++)
 			{
-				VertexComponent const& vertexComponent = vertexBufferObject.components.at(vcI);
+				VertexComponent const & vertexComponent = vertexBufferObject.components.at(vcI);
 				glVertexAttribPointer(vcI, vertexComponent.numDimensions, GL_FLOAT, false, vertexBufferObject.byteSizeOfVertex, (void *)vertexComponent.byteOffsetInVertex);
 				glEnableVertexAttribArray(vcI);
 			}

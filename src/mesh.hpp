@@ -21,10 +21,10 @@ namespace vew
 		void setVertexComponent(int componentIndex, int numDimensions, int byteOffsetInVertex, int verticesIndex);
 
 		// Sets the vertices at a given index.
-		void setVertices(int index, std::vector<float> const& vertices, int byteSizeOfVertex, bool instanced);
+		void setVertices(int index, std::vector<float> const & vertices, int byteSizeOfVertex, bool instanced);
 
 		// Sets the indices of a single instance.
-		void setIndices(std::vector<int> const& indices);
+		void setIndices(std::vector<int> const & indices);
 
 		// Sets the number of instances to render. Not supported if using GL ES 2.0.
 		void setNumInstances(int numInstances);

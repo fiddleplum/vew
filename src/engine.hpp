@@ -8,8 +8,8 @@ namespace vew
 {
 	class Viewport;
 	class Entity;
-	
-	class Engine
+
+	final class Engine
 	{
 	public:
 		Engine();

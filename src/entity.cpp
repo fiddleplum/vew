@@ -97,15 +97,14 @@ EMSCRIPTEN_BINDINGS(vew_Entity)
 {
 	emscripten::register_vector<std::string>("VectorString");
 	emscripten::class_<vew::Entity>("Entity")
-	.constructor<>()
-	.function("getPosition", &vew::Entity::getPosition)
-	.function("setPosition", &vew::Entity::setPosition)
-	.function("getOrientation", &vew::Entity::getOrientation)
-	.function("setOrientation", &vew::Entity::setOrientation)
-	.function("getParent", &vew::Entity::getParent, emscripten::allow_raw_pointers())
-	.function("setParent", &vew::Entity::setParent, emscripten::allow_raw_pointers())
-	.function("addComponent", &vew::Entity::addComponent, emscripten::allow_raw_pointers())
-	.function("removeComponent", &vew::Entity::removeComponent, emscripten::allow_raw_pointers())
-	.class_function("listComponentTypes", &vew::Entity::listComponentTypes)
-	;
+		.constructor<>()
+		.function("getPosition", &vew::Entity::getPosition)
+		.function("setPosition", &vew::Entity::setPosition)
+		.function("getOrientation", &vew::Entity::getOrientation)
+		.function("setOrientation", &vew::Entity::setOrientation)
+		.function("getParent", &vew::Entity::getParent, emscripten::allow_raw_pointers())
+		.function("setParent", &vew::Entity::setParent, emscripten::allow_raw_pointers())
+		.function("addComponent", &vew::Entity::addComponent, emscripten::allow_raw_pointers())
+		.function("removeComponent", &vew::Entity::removeComponent, emscripten::allow_raw_pointers())
+		.class_function("listComponentTypes", &vew::Entity::listComponentTypes);
 }

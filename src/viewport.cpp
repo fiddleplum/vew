@@ -13,13 +13,13 @@ namespace vew
 		canvasSize = {1, 1};
 	}
 
-	Camera* Viewport::getCamera()
+	Camera * Viewport::getCamera()
 	{
 		return camera;
 	}
 
 	// Sets the currently used camera.
-	void Viewport::setCamera(Camera* camera)
+	void Viewport::setCamera(Camera * camera)
 	{
 		this->camera = camera;
 		updateCameraAspectRatio();
@@ -58,16 +58,16 @@ namespace vew
 
 	void Viewport::render()
 	{
-		if(camera != nullptr)
+		if (camera != nullptr)
 		{
 			Vector2d boundsSize = bounds.getSize();
 			glViewport(canvasSize[0] * bounds.min[0], canvasSize[1] * bounds.min[1], canvasSize[0] * boundsSize[0], canvasSize[1] * boundsSize[1]);
 		}
 	}
-	
+
 	void Viewport::updateCameraAspectRatio()
 	{
-		if(camera != nullptr)
+		if (camera != nullptr)
 		{
 			Rectd pixelBounds = getPixelBounds();
 			camera->setAspectRatio((double)(pixelBounds.max[0] - pixelBounds.min[0]) / (pixelBounds.max[1] - pixelBounds.min[1]));
@@ -79,11 +79,11 @@ namespace vew
 EMSCRIPTEN_BINDINGS(vew_Viewport)
 {
 	emscripten::class_<vew::Viewport>("Viewport")
-	.constructor<>()
-	.function("getCamera", &vew::Viewport::getCamera, emscripten::allow_raw_pointers())
-	.function("setCamera", &vew::Viewport::setCamera, emscripten::allow_raw_pointers())
-	.function("setBounds", &vew::Viewport::setBounds)
-	.function("getPixelBounds", &vew::Viewport::getPixelBounds)
-	.function("canvasSpaceToViewSpace", &vew::Viewport::canvasSpaceToViewSpace)
-	.function("viewSpaceToCanvasSpace", &vew::Viewport::viewSpaceToCanvasSpace);
+		.constructor<>()
+		.function("getCamera", &vew::Viewport::getCamera, emscripten::allow_raw_pointers())
+		.function("setCamera", &vew::Viewport::setCamera, emscripten::allow_raw_pointers())
+		.function("setBounds", &vew::Viewport::setBounds)
+		.function("getPixelBounds", &vew::Viewport::getPixelBounds)
+		.function("canvasSpaceToViewSpace", &vew::Viewport::canvasSpaceToViewSpace)
+		.function("viewSpaceToCanvasSpace", &vew::Viewport::viewSpaceToCanvasSpace);
 }

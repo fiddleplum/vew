@@ -53,8 +53,7 @@ namespace vew
 	void Entity::registerComponent(std::string const & type)
 	{
 		std::cout << "Registering " << type << std::endl;
-		registerComponent(type, [] () -> T *
-		{
+		registerComponent(type, []() -> T * {
 			return new T();
 		});
 	}

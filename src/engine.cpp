@@ -37,7 +37,7 @@ namespace vew
 		viewports.push_back(viewport);
 		return viewport;
 	}
-	
+
 	void Engine::removeViewport(Viewport * viewport)
 	{
 		for (int i = 0; i < viewports.size(); i++)
@@ -58,7 +58,7 @@ namespace vew
 		entities.insert(entity);
 		return entity;
 	}
-	
+
 	void Engine::removeEntity(Entity * entity)
 	{
 		auto iter = entities.find(entity);
@@ -106,8 +106,8 @@ namespace vew
 EMSCRIPTEN_BINDINGS(vew_Engine)
 {
 	emscripten::class_<vew::Engine>("Engine")
-	.function("addViewport", &vew::Engine::addViewport, emscripten::allow_raw_pointers())
-	.function("removeViewport", &vew::Engine::removeViewport, emscripten::allow_raw_pointers())
-	.function("addEntity", &vew::Engine::addEntity, emscripten::allow_raw_pointers())
-	.function("removeEntity", &vew::Engine::removeEntity, emscripten::allow_raw_pointers());
+		.function("addViewport", &vew::Engine::addViewport, emscripten::allow_raw_pointers())
+		.function("removeViewport", &vew::Engine::removeViewport, emscripten::allow_raw_pointers())
+		.function("addEntity", &vew::Engine::addEntity, emscripten::allow_raw_pointers())
+		.function("removeEntity", &vew::Engine::removeEntity, emscripten::allow_raw_pointers());
 }

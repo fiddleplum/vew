@@ -5,7 +5,7 @@
 namespace vew
 {
 	// This is a standard mathematical quaternion class. T is the type of its elements.
-	template<typename T>
+	template <typename T>
 	class Quaternion
 	{
 	public:
@@ -19,10 +19,10 @@ namespace vew
 		Quaternion(T w, Vector<3, T> xyz);
 
 		// Constructs it with an angle and axis. If axisIsNormalized is true, the axis will not be normalized.
-		Quaternion(T angle, Vector<3, T> const& axis, bool axisIsNormalized);
+		Quaternion(T angle, Vector<3, T> const & axis, bool axisIsNormalized);
 
 		// Constructs it as a rotation from start to end. If vectorsAreNormalized is true, start and end will not be normalized.
-		Quaternion(Vector<3, T> const& start, Vector<3, T> const& end, bool vectorsAreNormalized);
+		Quaternion(Vector<3, T> const & start, Vector<3, T> const & end, bool vectorsAreNormalized);
 
 		// Constructs it as a trio of euler angles.
 		Quaternion(T yaw, T pitch, T roll);
@@ -31,7 +31,7 @@ namespace vew
 		static Quaternion<T> identity();
 
 		// Access element at index i.
-		T& operator[](int i);
+		T & operator[](int i);
 
 		// Access element at index i.
 		T operator[](int i) const;
@@ -52,7 +52,7 @@ namespace vew
 		void normalize();
 
 		// Returns the vector of the quaternion as a rotation operation applied to vector v. Assumes this is normalized.
-		Vector<3, T> rotate(Vector<3, T> const& v) const;
+		Vector<3, T> rotate(Vector<3, T> const & v) const;
 
 		// Returns the 0, 1, or 2 axis of the frame represented by this. Assumes this is normalized.
 		Vector<3, T> getAxis(int i) const;
@@ -72,50 +72,50 @@ namespace vew
 	typedef Quaternion<double> Quaterniond;
 
 	// Returns the addition of two quaternions.
-	template<typename T>
-	Quaternion<T> operator+(Quaternion<T> const& q_lhs, Quaternion<T> const& q_rhs);
+	template <typename T>
+	Quaternion<T> operator+(Quaternion<T> const & q_lhs, Quaternion<T> const & q_rhs);
 
 	// Returns the subtraction of two quaternions.
-	template<typename T>
-	Quaternion<T> operator-(Quaternion<T> const& q_lhs, Quaternion<T> const& q_rhs);
+	template <typename T>
+	Quaternion<T> operator-(Quaternion<T> const & q_lhs, Quaternion<T> const & q_rhs);
 
 	// Returns the multplication of two quaternions.
-	template<typename T>
-	Quaternion<T> operator*(Quaternion<T> const& q_lhs, Quaternion<T> const& q_rhs);
+	template <typename T>
+	Quaternion<T> operator*(Quaternion<T> const & q_lhs, Quaternion<T> const & q_rhs);
 
 	// Returns the multiplication of a quaternion and a scalar.
-	template<typename T>
-	Quaternion<T> operator*(Quaternion<T> const& q, T t);
+	template <typename T>
+	Quaternion<T> operator*(Quaternion<T> const & q, T t);
 
 	// Returns the multiplication of a scalar and a quaternion.
-	template<typename T>
-	Quaternion<T> operator*(T t, Quaternion<T> const& q);
+	template <typename T>
+	Quaternion<T> operator*(T t, Quaternion<T> const & q);
 
 	// Template implementation
 
-	template<typename T>
+	template <typename T>
 	Quaternion<T>::Quaternion()
 	{
 		w = 1;
 		xyz = {0, 0, 0};
 	}
 
-	template<typename T>
+	template <typename T>
 	Quaternion<T>::Quaternion(T w_, T x, T y, T z)
 	{
 		w = w_;
 		xyz = {x, y, z};
 	}
 
-	template<typename T>
+	template <typename T>
 	Quaternion<T>::Quaternion(T w_, Vector<3, T> xyz_)
 	{
 		w = w_;
 		xyz = xyz_;
 	}
 
-	template<typename T>
-	Quaternion<T>::Quaternion(Vector<3, T> const& start, Vector<3, T> const& end, bool vectorsAreNormalized)
+	template <typename T>
+	Quaternion<T>::Quaternion(Vector<3, T> const & start, Vector<3, T> const & end, bool vectorsAreNormalized)
 	{
 		w = start.dot(end);
 		Vector<3, T> axis;
@@ -138,8 +138,8 @@ namespace vew
 		normalize();
 	}
 
-	template<typename T>
-	Quaternion<T>::Quaternion(T angle, Vector<3, T> const& axis, bool axisIsNormalized)
+	template <typename T>
+	Quaternion<T>::Quaternion(T angle, Vector<3, T> const & axis, bool axisIsNormalized)
 	{
 		w = std::cos(angle / (T)2);
 		if (axisIsNormalized)
@@ -153,7 +153,7 @@ namespace vew
 		xyz *= std::sin(angle / (T)2);
 	}
 
-	template<typename T>
+	template <typename T>
 	Quaternion<T>::Quaternion(T yaw, T pitch, T roll)
 	{
 		// remember yaw goes positive to the right (if you're looking down +y)
@@ -175,8 +175,8 @@ namespace vew
 		return Quaternion<T>();
 	}
 
-	template<typename T>
-	T& Quaternion<T>::operator[](int i)
+	template <typename T>
+	T & Quaternion<T>::operator[](int i)
 	{
 		if (i == 0)
 		{
@@ -188,8 +188,8 @@ namespace vew
 		}
 	}
 
-	template<typename T>
-	T Quaternion<T>::operator[] (int i) const
+	template <typename T>
+	T Quaternion<T>::operator[](int i) const
 	{
 		if (i == 0)
 		{
@@ -201,13 +201,13 @@ namespace vew
 		}
 	}
 
-	template<typename T>
+	template <typename T>
 	Quaternion<T> Quaternion<T>::conjugate() const
 	{
 		return Quaternion<T>(w, -xyz);
 	}
 
-	template<typename T>
+	template <typename T>
 	Quaternion<T> Quaternion<T>::reciprocal() const
 	{
 		T nSq = normSq();
@@ -218,19 +218,19 @@ namespace vew
 		return conjugate() / nSq;
 	}
 
-	template<typename T>
+	template <typename T>
 	T Quaternion<T>::norm() const
 	{
 		return std::sqrt((w * w) + xyz.normSq());
 	}
 
-	template<typename T>
+	template <typename T>
 	T Quaternion<T>::normSq() const
 	{
 		return (w * w) + xyz.normSq();
 	}
 
-	template<typename T>
+	template <typename T>
 	void Quaternion<T>::normalize()
 	{
 		T n = norm();
@@ -242,14 +242,14 @@ namespace vew
 		xyz /= n;
 	}
 
-	template<typename T>
-	Vector<3, T> Quaternion<T>::rotate(Vector<3, T> const& v) const
+	template <typename T>
+	Vector<3, T> Quaternion<T>::rotate(Vector<3, T> const & v) const
 	{
 		Vector<3, T> t = (T)2 * xyz.cross(v);
 		return v + w * t + xyz.cross(t);
 	}
 
-	template<typename T>
+	template <typename T>
 	Vector<3, T> Quaternion<T>::getAxis(int i) const
 	{
 		if (i >= 3)
@@ -265,7 +265,7 @@ namespace vew
 		return axis;
 	}
 
-	template<typename T>
+	template <typename T>
 	Matrix<3, 3, T> Quaternion<T>::getMatrix() const
 	{
 		Matrix<3, 3, T> m;
@@ -290,32 +290,32 @@ namespace vew
 		return m;
 	}
 
-	template<typename T>
-	Quaternion<T> operator+(Quaternion<T> const& q_lhs, Quaternion<T> const& q_rhs)
+	template <typename T>
+	Quaternion<T> operator+(Quaternion<T> const & q_lhs, Quaternion<T> const & q_rhs)
 	{
 		return Quaternion<T>(q_lhs.w + q_rhs.r, q_lhs.xyz + q_rhs.xyz);
 	}
 
-	template<typename T>
-	Quaternion<T> operator-(Quaternion<T> const& q_lhs, Quaternion<T> const& q_rhs)
+	template <typename T>
+	Quaternion<T> operator-(Quaternion<T> const & q_lhs, Quaternion<T> const & q_rhs)
 	{
 		return Quaternion<T>(q_lhs.w - q_rhs.r, q_lhs.xyz - q_rhs.xyz);
 	}
 
-	template<typename T>
-	Quaternion<T> operator*(Quaternion<T> const& q_lhs, Quaternion<T> const& q_rhs)
+	template <typename T>
+	Quaternion<T> operator*(Quaternion<T> const & q_lhs, Quaternion<T> const & q_rhs)
 	{
 		return Quaternion<T>(q_lhs.w * q_rhs.w - q_lhs.xyz.dot(q_rhs.xyz), q_lhs.w * q_rhs.xyz + q_rhs.w * q_lhs.xyz + q_lhs.xyz.cross(q_rhs.xyz));
 	}
 
-	template<typename T>
-	Quaternion<T> operator*(Quaternion<T> const& q, T t)
+	template <typename T>
+	Quaternion<T> operator*(Quaternion<T> const & q, T t)
 	{
 		return Quaternion<T>(q.w * t, q.xyz * t);
 	}
 
-	template<typename T>
-	Quaternion<T> operator*(T t, Quaternion<T> const& q)
+	template <typename T>
+	Quaternion<T> operator*(T t, Quaternion<T> const & q)
 	{
 		return Quaternion<T>(t * q.w, t * q.xyz);
 	}

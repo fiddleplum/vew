@@ -4,14 +4,14 @@
 
 vew::Engine * engine = nullptr;
 
-void loop()
-{
-	engine->update();
-}
-
 vew::Engine * getEngine()
 {
 	return engine;
+}
+
+void loop()
+{
+	engine->update();
 }
 
 int main()

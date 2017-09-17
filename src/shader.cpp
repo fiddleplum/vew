@@ -4,11 +4,11 @@
 
 namespace vew
 {
-	int compileObject(std::string const& type, std::string const& code);
-	int linkProgram(std::vector<int> const& objects);
-	void populateUniformMapping(std::map<std::string, int>& uniforms, int program);
-	
-	Shader::Shader(std::string const& vertexCode, std::string const& fragmentCode)
+	int compileObject(std::string const & type, std::string const & code);
+	int linkProgram(std::vector<int> const & objects);
+	void populateUniformMapping(std::map<std::string, int> & uniforms, int program);
+
+	Shader::Shader(std::string const & vertexCode, std::string const & fragmentCode)
 	{
 		std::vector<int> objects;
 		objects.push_back(compileObject("vertex", vertexCode));
@@ -27,7 +27,7 @@ namespace vew
 		glDeleteProgram(program);
 	}
 
-	int Shader::getUniformLocation(std::string const& name) const
+	int Shader::getUniformLocation(std::string const & name) const
 	{
 		auto iter = uniformLocations.find(name);
 		if (iter == uniformLocations.end())
@@ -72,7 +72,7 @@ namespace vew
 		glUniformMatrix4fv(location, 1, false, value.ptr());
 	}
 
-	int compileObject(std::string const& type, std::string const& code)
+	int compileObject(std::string const & type, std::string const & code)
 	{
 		int glType = 0;
 		if (type == "vertex")
@@ -89,7 +89,7 @@ namespace vew
 		}
 		int object;
 		object = glCreateShader(glType);
-		char const* shaderCode = code.c_str();
+		char const * shaderCode = code.c_str();
 		GLint shaderCodeSize = (GLint)code.size();
 		glShaderSource(object, 1, &shaderCode, &shaderCodeSize);
 		glCompileShader(object);
@@ -110,7 +110,7 @@ namespace vew
 		return object;
 	}
 
-	int linkProgram(std::vector<int> const& objects)
+	int linkProgram(std::vector<int> const & objects)
 	{
 		int program = glCreateProgram();
 		for (int object : objects)
@@ -133,7 +133,7 @@ namespace vew
 		return program;
 	}
 
-	void populateUniformMapping(std::map<std::string, int>& uniformLocations, int program)
+	void populateUniformMapping(std::map<std::string, int> & uniformLocations, int program)
 	{
 		GLint numVariables;
 		GLint maxNameSize;
