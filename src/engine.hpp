@@ -1,7 +1,6 @@
 #pragma once
 
 #include "vector.hpp"
-#include <string>
 #include <vector>
 #include <set>
 
@@ -17,10 +16,6 @@ namespace vew
 
 		~Engine();
 
-		void render();
-
-		void printMessage(std::string const& message);
-
 		Viewport * addViewport();
 
 		void removeViewport(Viewport * viewport);
@@ -29,10 +24,11 @@ namespace vew
 
 		void removeEntity(Entity * entity);
 
-	private:
-		Vector2d canvasSize;
+		void update();
 
+	private:
 		std::vector<Viewport *> viewports;
 		std::set<Entity *> entities;
+		Vector2d canvasSize;
 	};
 }

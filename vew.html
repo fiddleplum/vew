@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Emscripten-Generated Code</title>
+		<title>VEW Test</title>
 		<style>
 			* {
 				box-sizing: border-box;
@@ -23,22 +23,30 @@
 	<body>
 		<canvas id="canvas" class="emscripten" oncontextmenu="event.preventDefault()"></canvas>
 		<script type='text/javascript'>
+			var canvas = document.getElementById('canvas');
+			function fixCanvasSize() {
+				window.addEventListener("resize", () => {
+					canvas.width = canvas.clientWidth;
+					canvas.height = canvas.clientHeight;
+				});
+				canvas.width = canvas.clientWidth;
+				canvas.height = canvas.clientHeight;
+			}
 			var Module = {
 				wasmBinaryFile: "out/vew.wasm",
 				preRun: [],
 				postRun: [],
 				print: console.log,
-				printErr: console.log,
-				canvas: (function () {
-					return document.getElementById('canvas');
-				})(),
-				totalDependencies: 0,
-				monitorRunDependencies: function (left) {
-					this.totalDependencies = Math.max(this.totalDependencies, left);
-					console.log(left ? 'Preparing... (' + (this.totalDependencies - left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
-				}
+				printErr: console.error,
+				canvas: canvas
 			};
-			console.log('Downloading...');
+			var VEW = Module;
+			var engine = null;
+			function initialize() {
+				console.log("VEW Initialized");
+				fixCanvasSize();
+				engine = VEW.getEngine();
+			}
 		</script>
 		<script async type="text/javascript" src="out/vew.js"></script>
 	</body>

@@ -1,6 +1,7 @@
 #include "engine.hpp"
 #include "viewport.hpp"
 #include "entity.hpp"
+#include "vector.hpp"
 #include <SDL/SDL.h>
 #include <emscripten/bind.h>
 #include <emscripten/emscripten.h>
@@ -14,7 +15,6 @@ namespace vew
 		int canvasWidth;
 		int canvasHeight;
 		emscripten_get_canvas_size(&canvasWidth, &canvasHeight, nullptr);
-		canvasSize = {(double)canvasWidth, (double)canvasHeight};
 
 		int result = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER);
 		if (result != 0)
@@ -23,31 +23,17 @@ namespace vew
 			return;
 		}
 		SDL_SetVideoMode(canvasWidth, canvasHeight, 0, SDL_OPENGL);
-		std::cout << "Success" << std::endl;
 	}
 
 	Engine::~Engine()
 	{
-		std::cout << "Deleted." << std::endl;
 		SDL_Quit();
-	}
-
-	void Engine::render()
-	{
-		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-		glViewport(0, 0, canvasSize[0], canvasSize[1]);
-		glClear(GL_COLOR_BUFFER_BIT);
-		SDL_GL_SwapBuffers();
-	}
-
-	void Engine::printMessage(std::string const& message)
-	{
-		std::cout << message << std::endl;
 	}
 
 	Viewport * Engine::addViewport()
 	{
 		Viewport * viewport = new Viewport();
+		viewport->setCanvasSize(canvasSize);
 		viewports.push_back(viewport);
 		return viewport;
 	}
@@ -63,7 +49,7 @@ namespace vew
 				return;
 			}
 		}
-		printMessage("Viewport not found.");
+		std::cerr << "Viewport not found." << std::endl;
 	}
 
 	Entity * Engine::addEntity()
@@ -82,7 +68,37 @@ namespace vew
 			delete entity;
 			return;
 		}
-		printMessage("Entity not found.");
+		std::cerr << "Entity not found." << std::endl;
+	}
+
+	void Engine::update()
+	{
+		// Check the canvas size.
+		int canvasWidth;
+		int canvasHeight;
+		emscripten_get_canvas_size(&canvasWidth, &canvasHeight, nullptr);
+		if (canvasSize[0] != (double)canvasWidth || canvasSize[1] != (double)canvasHeight)
+		{
+			canvasSize = {(double)canvasWidth, (double)canvasHeight};
+			for (auto viewport : viewports)
+			{
+				viewport->setCanvasSize(canvasSize);
+			}
+		}
+
+		// Clear the canvas.
+		glViewport(0, 0, canvasSize[0], canvasSize[1]);
+		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		// Render the viewports.
+		for (auto viewport : viewports)
+		{
+			viewport->render();
+		}
+
+		// Swap the buffers.
+		SDL_GL_SwapBuffers();
 	}
 }
 
@@ -90,12 +106,8 @@ namespace vew
 EMSCRIPTEN_BINDINGS(vew_Engine)
 {
 	emscripten::class_<vew::Engine>("Engine")
-	.constructor<>()
-	.function("render", &vew::Engine::render)
-	.function("printMessage", &vew::Engine::printMessage)
 	.function("addViewport", &vew::Engine::addViewport, emscripten::allow_raw_pointers())
 	.function("removeViewport", &vew::Engine::removeViewport, emscripten::allow_raw_pointers())
 	.function("addEntity", &vew::Engine::addEntity, emscripten::allow_raw_pointers())
-	.function("removeEntity", &vew::Engine::removeEntity, emscripten::allow_raw_pointers())
-	;
+	.function("removeEntity", &vew::Engine::removeEntity, emscripten::allow_raw_pointers());
 }

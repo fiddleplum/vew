@@ -22,6 +22,27 @@ namespace vew
 		// Constructs to min and max.
 		Interval(Vector<dim, T> min, Vector<dim, T> max);
 
+		// Returns the min.
+		Vector<dim, T> getMin() const;
+
+		// Sets the min.
+		void setMin(Vector<dim, T> min);
+
+		// Returns tha max.
+		Vector<dim, T> getMax() const;
+
+		// Sets the max.
+		void setMax(Vector<dim, T> max);
+
+		// Returns the size of the interval (max - min). If T is an integer, then one is added to the result.
+		Vector<dim, T> getSize() const;
+
+		// Sets the max to (min + size). If T is an integer, then subtract one from max, because max is included in the range.
+		void setSize(Vector<dim, T> size);
+
+		// Sets the min to position while keeping the size.
+		void setPosition(Vector<dim, T> position);
+
 		// Returns true if every element in v is within the corresponding dimension of the interval.
 		bool contains(Vector<dim, T> v) const;
 
@@ -40,20 +61,11 @@ namespace vew
 		// Returns an interval that is the intersection of this and other. If they do not overlap, the result is all zeros.
 		Interval<dim, T> intersectedWith(Interval<dim, T> const & other) const;
 
-		// Returns the size of the interval (max - min). If T is an integer, then one is added to the result.
-		Vector<dim, T> getSize() const;
-
 		// Returns a position or size aligned to the interval.
 		template <typename Y> Vector<dim, T> getSizeRelativeToThis(Vector<dim, Y> fractionOfThisSize, Vector<dim, T> offset) const;
 
 		// Returns an object position aligned to the interval, given the size of an object. You may want to set the size of the object first using the function above.
 		template <typename Y> Vector<dim, T> getPositionRelativeToThis(Vector<dim, T> objectSize, Vector<dim, Y> fractionOfObjectSize, Vector<dim, Y> fractionOfThisSize, Vector<dim, T> offset) const;
-
-		// Sets the min to position while keeping the size.
-		void setPosition(Vector<dim, T> position);
-
-		// Sets the max to (min + size). If T is an integer, then subtract one from max, because max is included in the range.
-		void setSize(Vector<dim, T> size);
 
 		Vector<dim, T> min;
 		Vector<dim, T> max;
@@ -83,6 +95,58 @@ namespace vew
 	{
 		min = min_;
 		max = max_;
+	}
+
+	template <int dim, typename T>
+	Vector<dim, T> Interval<dim, T>::getMin() const
+	{
+		return min;
+	}
+
+	template <int dim, typename T>
+	void Interval<dim, T>::setMin(Vector<dim, T> min_)
+	{
+		min = min_;
+	}
+
+	template <int dim, typename T>
+	Vector<dim, T> Interval<dim, T>::getMax() const
+	{
+		return max;
+	}
+
+	template <int dim, typename T>
+	void Interval<dim, T>::setMax(Vector<dim, T> max_)
+	{
+		max = max_;
+	}
+
+	template <int dim, typename T>
+	Vector<dim, T> Interval<dim, T>::getSize() const
+	{
+		Vector<dim, T> r = max - min;
+		if (std::is_integral<T>::value)
+		{
+			r += Vector<dim, T>::filled(1);
+		}
+		return r;
+	}
+
+	template <int dim, typename T>
+	void Interval<dim, T>::setSize(Vector<dim, T> size)
+	{
+		max = min + size;
+		if (std::is_integral<T>::value)
+		{
+			max -= Vector<dim, T>::filled(1);
+		}
+	}
+
+	template <int dim, typename T>
+	void Interval<dim, T>::setPosition(Vector<dim, T> position)
+	{
+		max += position - min;
+		min = position;
 	}
 
 	template <int dim, typename T>
@@ -173,17 +237,6 @@ namespace vew
 		return r;
 	}
 
-	template <int dim, typename T>
-	Vector<dim, T> Interval<dim, T>::getSize() const
-	{
-		Vector<dim, T> r = max - min;
-		if (std::is_integral<T>::value)
-		{
-			r += Vector<dim, T>::filled(1);
-		}
-		return r;
-	}
-
 	template <int dim, typename T> template <typename Y>
 	Vector<dim, T> Interval<dim, T>::getSizeRelativeToThis(Vector<dim, Y> fractionOfThisSize, Vector<dim, T> offset) const
 	{
@@ -206,22 +259,5 @@ namespace vew
 			r[i] = min[i] + offset[i] + (T)(thisSize[i] * fractionOfThisSize[i]) - (T)(objectSize[i] * fractionOfObjectSize[i]);
 		}
 		return r;
-	}
-
-	template <int dim, typename T>
-	void Interval<dim, T>::setPosition(Vector<dim, T> position)
-	{
-		max += position - min;
-		min = position;
-	}
-
-	template <int dim, typename T>
-	void Interval<dim, T>::setSize(Vector<dim, T> size)
-	{
-		max = min + size;
-		if (std::is_integral<T>::value)
-		{
-			max -= Vector<dim, T>::filled(1);
-		}
 	}
 }

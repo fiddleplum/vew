@@ -2,6 +2,7 @@
 #include "camera.hpp"
 #include <emscripten/bind.h>
 #include <emscripten/emscripten.h>
+#include <GLES2/gl2.h>
 
 namespace vew
 {
@@ -55,6 +56,15 @@ namespace vew
 		updateCameraAspectRatio();
 	}
 
+	void Viewport::render()
+	{
+		if(camera != nullptr)
+		{
+			Vector2d boundsSize = bounds.getSize();
+			glViewport(canvasSize[0] * bounds.min[0], canvasSize[1] * bounds.min[1], canvasSize[0] * boundsSize[0], canvasSize[1] * boundsSize[1]);
+		}
+	}
+	
 	void Viewport::updateCameraAspectRatio()
 	{
 		if(camera != nullptr)
@@ -72,5 +82,8 @@ EMSCRIPTEN_BINDINGS(vew_Viewport)
 	.constructor<>()
 	.function("getCamera", &vew::Viewport::getCamera, emscripten::allow_raw_pointers())
 	.function("setCamera", &vew::Viewport::setCamera, emscripten::allow_raw_pointers())
-	;
+	.function("setBounds", &vew::Viewport::setBounds)
+	.function("getPixelBounds", &vew::Viewport::getPixelBounds)
+	.function("canvasSpaceToViewSpace", &vew::Viewport::canvasSpaceToViewSpace)
+	.function("viewSpaceToCanvasSpace", &vew::Viewport::viewSpaceToCanvasSpace);
 }

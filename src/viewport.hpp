@@ -35,6 +35,9 @@ namespace vew
 		// Internal to vew. Sets the size of the canvas.
 		void setCanvasSize(Vector2d size);
 
+		// Internal to vew. Renders the viewport.
+		void render();
+
 	private:
 		void updateCameraAspectRatio();
 
