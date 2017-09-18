@@ -1,5 +1,5 @@
-#include "viewport.hpp"
-#include "camera.hpp"
+#include <viewport.hpp>
+#include <components/camera.hpp>
 #include <emscripten/bind.h>
 #include <emscripten/emscripten.h>
 #include <GLES2/gl2.h>

@@ -1,5 +1,5 @@
-#include "entity.hpp"
-#include "component.hpp"
+#include <entity.hpp>
+#include <components/component.hpp>
 #include <emscripten/bind.h>
 #include <emscripten/emscripten.h>
 #include <iostream>

@@ -1,5 +1,5 @@
-#include "camera.hpp"
-#include "entity.hpp"
+#include <components/camera.hpp>
+#include <entity.hpp>
 #include <emscripten/bind.h>
 #include <limits>
 

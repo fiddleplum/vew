@@ -1,6 +1,6 @@
 #pragma once
 
-#include "rect.hpp"
+#include <math/rect.hpp>
 
 namespace vew
 {

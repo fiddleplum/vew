@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vector.hpp"
+#include <math/vector.hpp>
 
 /*
 	This is a standard mathematical matrix class. Rows and cols are the dimensions of the matrix and T is the type of its elements.

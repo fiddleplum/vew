@@ -1,7 +1,7 @@
-#include "engine.hpp"
-#include "viewport.hpp"
-#include "entity.hpp"
-#include "vector.hpp"
+#include <engine.hpp>
+#include <viewport.hpp>
+#include <entity.hpp>
+#include <math/vector.hpp>
 #include <SDL/SDL.h>
 #include <emscripten/bind.h>
 #include <emscripten/emscripten.h>

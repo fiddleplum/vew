@@ -1,6 +1,8 @@
 #pragma once
 
-#include "vector.hpp"
+#include <math/vector.hpp>
+#include <resources/resource_cache.hpp>
+#include <resources/shader.hpp>
 #include <vector>
 #include <set>
 
@@ -9,7 +11,7 @@ namespace vew
 	class Viewport;
 	class Entity;
 
-	final class Engine
+	class Engine final
 	{
 	public:
 		Engine();
@@ -24,11 +26,21 @@ namespace vew
 
 		void removeEntity(Entity * entity);
 
+		void addShader(std::string const & name);
+
+		void addTexture(std::string const & name);
+
+		void addMaterial(std::string const & name);
+
+		void addMesh(std::string const & name);
+
 		void update();
 
 	private:
 		std::vector<Viewport *> viewports;
 		std::set<Entity *> entities;
+		ResourceCache<Shader> shaders;
+
 		Vector2d canvasSize;
 	};
 }

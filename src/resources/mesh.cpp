@@ -1,4 +1,4 @@
-#include "mesh.hpp"
+#include <resources/mesh.hpp>
 #include <GLES2/gl2.h>
 
 namespace vew

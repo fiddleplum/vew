@@ -1,4 +1,4 @@
-#include "quaternion.hpp"
+#include <math/quaternion.hpp>
 #include <emscripten/bind.h>
 #include <emscripten/emscripten.h>
 #include <string>

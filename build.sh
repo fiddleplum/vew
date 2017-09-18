@@ -14,4 +14,4 @@ if [ -f $BUILD_COMPONENTS_FILE ]; then
 fi
 
 echo "Building VEW"
-emcc src/*.cpp $BUILD_COMPONENTS --bind -std=c++11 -O3 -s USE_SDL=2 -s WASM=1 -o out/vew.js
+emcc -Isrc $(find . -type f -iname *.cpp -print) $BUILD_COMPONENTS --bind -std=c++11 -O3 -s USE_SDL=2 -s WASM=1 -o out/vew.js

@@ -1,0 +1,6 @@
+namespace vew
+{
+	class Model
+	{
+	};
+}

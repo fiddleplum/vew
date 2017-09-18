@@ -1,7 +1,11 @@
-#include "light.hpp"
+#include <components/light.hpp>
+#include <emscripten/bind.h>
+#include <emscripten/emscripten.h>
 
 namespace vew
 {
+	ComponentRegister<Light> lightRegister("light");
+	
 	Vector3d Light::getColor() const
 	{
 		return color;

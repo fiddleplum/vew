@@ -1,7 +1,7 @@
 #pragma once
 
-#include "matrix.hpp"
-#include "component.hpp"
+#include <math/matrix.hpp>
+#include <components/component.hpp>
 
 namespace vew
 {

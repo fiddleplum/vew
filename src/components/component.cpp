@@ -1,4 +1,4 @@
-#include "component.hpp"
+#include <components/component.hpp>
 #include <emscripten/bind.h>
 
 namespace vew

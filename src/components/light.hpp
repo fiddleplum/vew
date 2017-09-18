@@ -1,4 +1,5 @@
-#include "component.hpp"
+#include <components/component.hpp>
+#include <math/vector.hpp>
 
 namespace vew
 {

@@ -1,4 +1,4 @@
-#include "shader.hpp"
+#include <resources/shader.hpp>
 #include <GLES2/gl2.h>
 #include <vector>
 

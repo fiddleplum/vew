@@ -1,6 +1,6 @@
 #pragma once
 
-#include "interval.hpp"
+#include <math/interval.hpp>
 
 namespace vew
 {

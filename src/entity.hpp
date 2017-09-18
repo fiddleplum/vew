@@ -1,7 +1,7 @@
 #pragma once
 
-#include "vector.hpp"
-#include "quaternion.hpp"
+#include <math/vector.hpp>
+#include <math/quaternion.hpp>
 #include <string>
 #include <map>
 #include <set>

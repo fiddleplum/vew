@@ -1,4 +1,4 @@
-#include "rect.hpp"
+#include <math/rect.hpp>
 #include <emscripten/bind.h>
 #include <emscripten/emscripten.h>
 #include <string>

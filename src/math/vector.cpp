@@ -1,4 +1,4 @@
-#include "vector.hpp"
+#include <math/vector.hpp>
 #include <emscripten/bind.h>
 #include <emscripten/emscripten.h>
 #include <string>
