@@ -72,6 +72,11 @@ namespace vew
 		glUniformMatrix4fv(location, 1, false, value.ptr());
 	}
 
+	void Shader::activate()
+	{
+		glUseProgram(program);
+	}
+
 	int compileObject(std::string const & type, std::string const & code)
 	{
 		int glType = 0;

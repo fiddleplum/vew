@@ -79,7 +79,6 @@ namespace vew
 EMSCRIPTEN_BINDINGS(vew_Viewport)
 {
 	emscripten::class_<vew::Viewport>("Viewport")
-		.constructor<>()
 		.function("getCamera", &vew::Viewport::getCamera, emscripten::allow_raw_pointers())
 		.function("setCamera", &vew::Viewport::setCamera, emscripten::allow_raw_pointers())
 		.function("setBounds", &vew::Viewport::setBounds)

@@ -29,7 +29,7 @@ namespace vew
 		// Sets the number of instances to render. Not supported if using GL ES 2.0.
 		void setNumInstances(int numInstances);
 
-		// Renders the Mesh.
+		// Internal to view. Renders the Mesh. Called by Model.
 		void render() const;
 
 	private:

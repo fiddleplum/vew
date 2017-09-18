@@ -97,7 +97,6 @@ EMSCRIPTEN_BINDINGS(vew_Entity)
 {
 	emscripten::register_vector<std::string>("VectorString");
 	emscripten::class_<vew::Entity>("Entity")
-		.constructor<>()
 		.function("getPosition", &vew::Entity::getPosition)
 		.function("setPosition", &vew::Entity::setPosition)
 		.function("getOrientation", &vew::Entity::getOrientation)
