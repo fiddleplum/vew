@@ -119,7 +119,7 @@ namespace vew
 		// Returns a vector with each element in this clamped to the range specificied by the corresponding elements in min and max.
 		Vector<dim, T> clamp(Vector<dim, T> min, Vector<dim, T> max) const;
 
-	private:
+		// Raw access to values.
 		T c[dim];
 
 		template <int dimY, typename Y>

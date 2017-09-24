@@ -42,10 +42,20 @@
 			};
 			var VEW = Module;
 			var engine = null;
+			var viewport = null;
+			var cameraEntity = null;
+			var camera = null;
+			var modelEntity = null;
 			function initialize() {
 				console.log("VEW Initialized");
 				fixCanvasSize();
 				engine = VEW.getEngine();
+				viewport = engine.addViewport();
+				cameraEntity = engine.addEntity();
+				camera = cameraEntity.addComponent("camera");
+				viewport.setCamera(camera);
+				modelEntity = engine.addEntity();
+				modelEntity.setPosition([0, 10, 0]);
 			}
 		</script>
 		<script async type="text/javascript" src="out/vew.js"></script>
