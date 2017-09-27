@@ -38,6 +38,12 @@
 		"algorithm": "cpp",
 		"ios": "cpp",
 		"__locale": "cpp",
-		"iosfwd": "cpp"
+		"iosfwd": "cpp",
+		"__string": "cpp",
+		"cmath": "cpp",
+		"cstddef": "cpp",
+		"cstdlib": "cpp",
+		"xstddef": "cpp",
+		"xtr1common": "cpp"
 	}
 }
